@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-
 import Navbar from "./components/Navbar";
 import Dashboard from "./components/Dashboard";
 import Transactions from "./components/Transactions";
@@ -18,104 +17,104 @@ import RiskQuiz from "./components/RiskQuiz";
 import FaqPage from "./components/FaqPage";
 import CsvUpload from "./components/CsvUpload";
 
-import ProfileSetup from "./components/ProfileSetup"; // <-- NEW IMPORT
+import ProfileSetup from "./components/ProfileSetup"; // <-- IMPORTANT
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [role, setRole] = useState("user");
   const [profileComplete, setProfileComplete] = useState(false);
 
-
-  // Track if user has completed profile setup
-  const [profileCompleted, setProfileCompleted] = useState(
-    localStorage.getItem("profileCompleted") === "true"
-  );
-
   return (
     <Router>
-      {loggedIn && <Navbar setLoggedIn={() => {
-        setLoggedIn(false);
-        setProfileCompleted(false);
-        localStorage.removeItem("profileCompleted");
-      }} />}
+      {loggedIn && profileComplete && (
+        <Navbar setLoggedIn={setLoggedIn} />
+      )}
 
       <Routes>
 
-        {/* LOGIN ROUTE */}
-        <Route
-          path="/login"
-          element={
-            loggedIn ? (
-              profileCompleted ? (
-                <Navigate to="/" />
-              ) : (
-                <Navigate to="/setup-profile" />
-              )
-            ) : (
-              <Login
-                onLogin={(r) => {
-                  setLoggedIn(true);
-                  setRole(r);
-                }}
-              />
-            )
-          }
-        />
-
-        {/* NEW PROFILE SETUP ROUTE */}
-        <Route
-          path="/setup-profile"
-          element={
-            loggedIn ? (
-              <ProfileSetup
-                onComplete={() => {
-                  localStorage.setItem("profileCompleted", "true");
-                  setProfileCompleted(true);
-                }}
-              />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-
-        {/* PUBLIC ROUTES */}
-        <Route path="/about" element={<AboutUs />} />
-        <Route path="/contact" element={<ContactUs />} />
-
-        {/* PROTECTED ROUTES */}
+        {/* HOME route: requires login + profile setup */}
         <Route
           path="/"
           element={
-            loggedIn && profileCompleted ? (
-              <Dashboard role={role} />
+            !loggedIn ? (
+              <Navigate to="/login" />
+            ) : !profileComplete ? (
+              <ProfileSetup onComplete={() => setProfileComplete(true)} />
             ) : (
-              <Navigate to="/setup-profile" />
+              <Dashboard role={role} />
             )
           }
         />
 
+        {/* ABOUT */}
         <Route
-          path="/transactions"
-          element={loggedIn ? <Transactions role={role} /> : <Navigate to="/login" />}
+          path="/about"
+          element={
+            loggedIn ? <AboutUs /> : <Navigate to="/login" />
+          }
         />
 
+        {/* LIVE ALERTS */}
         <Route
-          path="/alerts"
-          element={loggedIn ? <Alerts role={role} /> : <Navigate to="/login" />}
+          path="/live-alerts"
+          element={
+            loggedIn ? <LiveAlerts /> : <Navigate to="/login" />
+          }
         />
 
+        {/* RISK BREAKDOWN */}
+        <Route
+          path="/risk-breakdown"
+          element={
+            loggedIn ? <RiskBreakdown /> : <Navigate to="/login" />
+          }
+        />
+
+        {/* NEWS FEED */}
+        <Route
+          path="/news"
+          element={
+            loggedIn ? <NewsFeed /> : <Navigate to="/login" />
+          }
+        />
+
+        {/* RISK QUIZ */}
+        <Route
+          path="/self-assessment"
+          element={
+            loggedIn ? <RiskQuiz /> : <Navigate to="/login" />
+          }
+        />
+
+        {/* CSV UPLOAD */}
+        <Route
+          path="/csv"
+          element={
+            loggedIn ? <CsvUpload /> : <Navigate to="/login" />
+          }
+        />
+
+        {/* LOGIN ROUTE */}
+        <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
+
+        {/* PROFILE PAGE */}
         <Route
           path="/profile"
-          element={loggedIn ? <Profile role={role} /> : <Navigate to="/login" />}
+          element={
+            loggedIn ? <Profile role={role} /> : <Navigate to="/login" />
+          }
         />
 
-        <Route path="/live-alerts" element={<LiveAlerts />} />
-        <Route path="/risk-breakdown" element={<RiskBreakdown />} />
-        <Route path="/news" element={<NewsFeed />} />
-        <Route path="/self-assessment" element={<RiskQuiz />} />
-        <Route path="/faq" element={<FaqPage />} />
-        <Route path="/ml-uploader" element={<CsvUpload />} />
+        {/* CONTACT US */}
+        <Route
+          path="/contact"
+          element={
+            loggedIn ? <ContactUs /> : <Navigate to="/login" />
+          }
+        />
+
+        {/* DEFAULT FALLBACK */}
+        <Route path="*" element={<Navigate to="/" />} />
 
       </Routes>
     </Router>
