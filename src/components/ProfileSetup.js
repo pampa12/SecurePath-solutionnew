@@ -12,6 +12,8 @@ export default function ProfileSetup({ onComplete }) {
     profileImage: null,
   });
 
+  const [saved, setSaved] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProfile({ ...profile, [name]: value });
@@ -27,117 +29,135 @@ export default function ProfileSetup({ onComplete }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Save profile to localStorage to mark it as completed
+    // Save data (TEMP: use localStorage until backend is ready)
     localStorage.setItem("userProfile", JSON.stringify(profile));
     localStorage.setItem("profileCompleted", "true");
 
-    onComplete(); // redirect to dashboard
+    setSaved(true);
+
+    setTimeout(() => {
+      onComplete(); // redirect to dashboard
+    }, 900);
   };
 
   return (
     <div
       style={{
-        maxWidth: "420px",
-        margin: "3em auto",
-        padding: "2em",
-        background: "#fff",
-        borderRadius: "16px",
-        boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "#f2f5fa",
+        padding: "2rem",
       }}
     >
-      <h2 style={{ textAlign: "center", marginBottom: "1em" }}>
-        Complete Your Profile
-      </h2>
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          background: "#fff",
+          padding: "2rem",
+          borderRadius: "18px",
+          boxShadow: "0px 4px 20px rgba(0,0,0,0.1)",
+          width: "100%",
+          maxWidth: "420px",
+        }}
+      >
+        <h2 style={{ marginBottom: "1rem", textAlign: "center" }}>
+          Complete Your Profile
+        </h2>
 
-      {/* Profile photo */}
-      <div style={{ textAlign: "center", marginBottom: "1.4em" }}>
-        <img
-          src={profile.profileImage || "https://via.placeholder.com/80"}
-          alt="profile"
-          style={{
-            width: "80px",
-            height: "80px",
-            borderRadius: "50%",
-            objectFit: "cover",
-            marginBottom: ".6em",
-          }}
-        />
-        <input type="file" accept="image/*" onChange={handleImageChange} />
-      </div>
+        {/* Profile Image */}
+        <div style={{ textAlign: "center", marginBottom: "1.4rem" }}>
+          <label style={{ cursor: "pointer" }}>
+            <img
+              src={
+                profile.profileImage ||
+                "https://cdn-icons-png.flaticon.com/512/847/847969.png"
+              }
+              alt="profile"
+              style={{
+                width: "110px",
+                height: "110px",
+                borderRadius: "50%",
+                objectFit: "cover",
+                border: "3px solid #ddd",
+              }}
+            />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              style={{ display: "none" }}
+            />
+          </label>
+          <div style={{ fontSize: "0.9rem", marginTop: "0.3rem" }}>
+            Upload Image
+          </div>
+        </div>
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1em" }}>
-        <input
-          name="name"
-          placeholder="Full Name"
-          value={profile.name}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          name="email"
-          placeholder="Email"
-          type="email"
-          value={profile.email}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          name="phone"
-          placeholder="Phone Number"
-          value={profile.phone}
-          onChange={handleChange}
-        />
-
-        <input
-          name="country"
-          placeholder="Country"
-          value={profile.country}
-          onChange={handleChange}
-        />
-
-        <input
-          name="job"
-          placeholder="Your Job"
-          value={profile.job}
-          onChange={handleChange}
-        />
-
-        <input
-          name="industry"
-          placeholder="Industry (optional)"
-          value={profile.industry}
-          onChange={handleChange}
-        />
-
-        <select
-          name="securityLevel"
-          value={profile.securityLevel}
-          onChange={handleChange}
-        >
-          <option value="">Security Awareness Level</option>
-          <option value="Beginner">Beginner</option>
-          <option value="Intermediate">Intermediate</option>
-          <option value="Advanced">Advanced</option>
-        </select>
+        {/* Form Fields */}
+        {[
+          ["name", "Full Name"],
+          ["email", "Email Address"],
+          ["phone", "Phone Number"],
+          ["country", "Country"],
+          ["job", "Your Job"],
+          ["industry", "Industry"],
+          ["securityLevel", "Security Awareness Level"],
+        ].map(([key, label]) => (
+          <div key={key} style={{ marginBottom: "1rem" }}>
+            <label style={{ display: "block", marginBottom: "0.3rem" }}>
+              {label}
+            </label>
+            <input
+              type="text"
+              name={key}
+              value={profile[key]}
+              onChange={handleChange}
+              required={key !== "industry" && key !== "securityLevel"}
+              style={{
+                width: "100%",
+                padding: "0.7rem",
+                borderRadius: "8px",
+                border: "1px solid #ccc",
+              }}
+            />
+          </div>
+        ))}
 
         <button
           type="submit"
           style={{
+            marginTop: "1rem",
+            width: "100%",
+            padding: "0.9rem",
             background: "#3e95cd",
             color: "#fff",
-            padding: "0.8em",
             border: "none",
-            borderRadius: "6px",
-            fontWeight: "bold",
+            borderRadius: "10px",
+            fontSize: "1.1rem",
             cursor: "pointer",
           }}
         >
-          SAVE PROFILE
+          Save Profile
         </button>
+
+        {saved && (
+          <div
+            style={{
+              marginTop: "1rem",
+              padding: "0.7rem",
+              background: "#d8f7d3",
+              color: "#2d7a32",
+              textAlign: "center",
+              borderRadius: "8px",
+              fontWeight: "bold",
+            }}
+          >
+            ✔ Profile Saved — Redirecting…
+          </div>
+        )}
       </form>
     </div>
   );
 }
-
