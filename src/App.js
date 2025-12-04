@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
+
 import Navbar from "./components/Navbar";
 import Dashboard from "./components/Dashboard";
 import Transactions from "./components/Transactions";
@@ -22,6 +23,8 @@ import ProfileSetup from "./components/ProfileSetup"; // <-- NEW IMPORT
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [role, setRole] = useState("user");
+  const [profileComplete, setProfileComplete] = useState(false);
+
 
   // Track if user has completed profile setup
   const [profileCompleted, setProfileCompleted] = useState(
