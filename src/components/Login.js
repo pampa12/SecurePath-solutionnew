@@ -4,15 +4,10 @@ const logoURL = "/logo.png";
 function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("Customer");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Normalize role names so App.js understands them
-    const normalizedRole = role === "Manager" ? "admin" : "user";
-
-    onLogin(normalizedRole); // <-- This will correctly trigger login + profile setup
+    onLogin(); // <-- Trigger login without role
   };
 
   return (
@@ -81,15 +76,6 @@ function Login({ onLogin }) {
           required
           style={inputStyle}
         />
-
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          style={inputStyle}
-        >
-          <option>Customer</option>
-          <option>Manager</option>
-        </select>
 
         <button
           type="submit"
