@@ -8,7 +8,11 @@ function Login({ onLogin }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onLogin(role); // <-- This triggers login AND profile setup redirect
+
+    // Normalize role names so App.js understands them
+    const normalizedRole = role === "Manager" ? "admin" : "user";
+
+    onLogin(normalizedRole); // <-- This will correctly trigger login + profile setup
   };
 
   return (
