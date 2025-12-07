@@ -23,6 +23,8 @@ function App() {
   const [role, setRole] = useState("user");
   const [profileComplete, setProfileComplete] = useState(false);
 
+  console.log("STATE NOW:", loggedIn, profileComplete);
+
   return (
     <Router>
       {/* Only show Navbar AFTER login + profile is completed */}
