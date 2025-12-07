@@ -1,0 +1,139 @@
+/* --- WRAPPER --- */
+.profile-setup-wrapper {
+    min-height: 100vh;
+    width: 100vw;
+    background: linear-gradient(to bottom, #e8f0ff, #cfe0ff, #bcd3ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Background logo watermark */
+.profile-bg-logo {
+    position: absolute;
+    width: 600px;
+    opacity: 0.06;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+/* Main Card */
+.profile-card {
+    width: 700px;
+    background: white;
+    padding: 40px 50px;
+    border-radius: 28px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+    z-index: 10;
+}
+
+.profile-card h2 {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1b3b6b;
+    margin-bottom: 6px;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #5f728f;
+    margin-bottom: 25px;
+}
+
+/* Upload section */
+.id-upload-section {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.photo-wrapper {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.id-preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #d9e6ff;
+    background: #eef4ff;
+    transition: 0.2s;
+}
+
+.id-preview:hover {
+    transform: scale(1.05);
+}
+
+.upload-text {
+    margin-top: 10px;
+    color: #1a73e8;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Labels & Inputs */
+form label {
+    display: block;
+    margin-top: 18px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #344b70;
+}
+
+form input,
+form select,
+form textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #c3d4ef;
+    background: #f8fbff;
+    font-size: 15px;
+    outline: none;
+}
+
+/* Section title */
+.section-title {
+    margin-top: 30px;
+    font-size: 18px;
+    color: #1b3b6b;
+    border-bottom: 1px solid #e1e7f5;
+    padding-bottom: 6px;
+}
+
+/* Checkbox row */
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    cursor: pointer;
+}
+
+/* Button */
+.save-btn {
+    width: 100%;
+    background: linear-gradient(90deg, #1a73e8, #4aa8ff);
+    padding: 14px;
+    border-radius: 12px;
+    color: white;
+    font-size: 17px;
+    font-weight: 600;
+    border: none;
+    margin-top: 30px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.save-btn:hover {
+    background: linear-gradient(90deg, #166ad1, #379df8);
+}

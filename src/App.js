@@ -1,6 +1,7 @@
 // App.js
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
 import Navbar from "./components/Navbar";
 import Dashboard from "./components/Dashboard";
 import Transactions from "./components/Transactions";
@@ -14,33 +15,87 @@ import RiskBreakdown from "./components/RiskBreakdown";
 import NewsFeed from "./components/NewsFeed";
 import RiskQuiz from "./components/RiskQuiz";
 import FaqPage from "./components/FaqPage";
-import CsvUpload from "./components/CsvUpload"; // <--- Add this
+import CsvUpload from "./components/CsvUpload";
+import ProfileSetup from "./components/ProfileSetup";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [role, setRole] = useState("user");
+  const [profileComplete, setProfileComplete] = useState(false);
+
+  // Load user profile from localStorage
+  const savedProfile = JSON.parse(localStorage.getItem("userProfile"));
 
   return (
     <Router>
-      {loggedIn && <Navbar setLoggedIn={setLoggedIn} />}
+      {/* Show Navbar only if logged in and profile is completed */}
+      {loggedIn && profileComplete && (
+        <Navbar
+          setLoggedIn={(v) => {
+            setLoggedIn(v);
+            setProfileComplete(false);
+            localStorage.removeItem("userProfile");
+          }}
+          user={savedProfile}  // ← PASS USER TO NAVBAR
+        />
+      )}
+
       <Routes>
-        <Route path="/login" element={
-          loggedIn
-            ? <Navigate to="/" />
-            : <Login onLogin={r => { setLoggedIn(true); setRole(r); }} />
-        } />
-        <Route path="/about" element={<AboutUs />} />
-        <Route path="/contact" element={<ContactUs />} />
-        <Route path="/live-alerts" element={<LiveAlerts />} />
-        <Route path="/risk-breakdown" element={<RiskBreakdown />} />
-        <Route path="/news" element={<NewsFeed />} />
-        <Route path="/self-assessment" element={<RiskQuiz />} />
+
+        {/* MAIN ROUTE */}
+        <Route
+          path="/"
+          element={
+            !loggedIn ? (
+              <Navigate to="/login" />
+            ) : !profileComplete ? (
+              <ProfileSetup onComplete={() => setProfileComplete(true)} />
+            ) : (
+              <Dashboard />
+            )
+          }
+        />
+
+        {/* LOGIN */}
+        <Route
+          path="/login"
+          element={
+            loggedIn ? (
+              profileComplete ? (
+                <Navigate to="/" />
+              ) : (
+                <ProfileSetup onComplete={() => setProfileComplete(true)} />
+              )
+            ) : (
+              <Login
+                onLogin={() => {
+                  setLoggedIn(true);
+                  setProfileComplete(false);
+                }}
+              />
+            )
+          }
+        />
+
+        {/* PROFILE */}
+        <Route
+          path="/profile"
+          element={loggedIn ? <Profile /> : <Navigate to="/login" />}
+        />
+
+        {/* OTHER ROUTES */}
+        <Route path="/about" element={loggedIn ? <AboutUs /> : <Navigate to="/login" />} />
+        <Route path="/contact" element={loggedIn ? <ContactUs /> : <Navigate to="/login" />} />
+        <Route path="/live-alerts" element={loggedIn ? <LiveAlerts /> : <Navigate to="/login" />} />
+        <Route path="/risk-breakdown" element={loggedIn ? <RiskBreakdown /> : <Navigate to="/login" />} />
+        <Route path="/news" element={loggedIn ? <NewsFeed /> : <Navigate to="/login" />} />
+        <Route path="/self-assessment" element={loggedIn ? <RiskQuiz /> : <Navigate to="/login" />} />
+        <Route path="/csv" element={loggedIn ? <CsvUpload /> : <Navigate to="/login" />} />
+
         <Route path="/faq" element={<FaqPage />} />
-        <Route path="/ml-uploader" element={loggedIn ? <CsvUpload /> : <Navigate to="/login" />} /> {/* ML upload route */}
-        <Route path="/" element={loggedIn ? <Dashboard role={role} /> : <Navigate to="/login" />} />
-        <Route path="/transactions" element={loggedIn ? <Transactions role={role} /> : <Navigate to="/login" />} />
-        <Route path="/alerts" element={loggedIn ? <Alerts role={role} /> : <Navigate to="/login" />} />
-        <Route path="/profile" element={loggedIn ? <Profile role={role} /> : <Navigate to="/login" />} />
+
+        {/* FALLBACK */}
+        <Route path="*" element={<Navigate to="/" />} />
+
       </Routes>
     </Router>
   );
